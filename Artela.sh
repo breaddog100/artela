@@ -84,10 +84,7 @@ function install_node() {
     PEERS="096d8b3a2fe79791ef307935e0b72afcf505b149@84.247.140.122:24656,a01a5d0015e685655b1334041d907ce2db51c02f@173.249.16.25:45656,8542e4e88e01f9c95db2cd762460eecad2d66583@155.133.26.10:26656,dd5d35fb496afe468dd35213270b02b3a415f655@15.235.144.20:30656,8510929e6ba058e84019b1a16edba66e880744e1@217.76.50.155:656,f16f036a283c5d2d77d7dc564f5a4dc6cf89393b@91.190.156.180:42656,6554c18f24455cf1b60eebcc8b311a693371881a@164.68.114.21:45656,301d46637a338c2855ede5d2a587ad1f366f3813@95.217.200.98:18656"
     sed -i 's|^persistent_peers *=.*|persistent_peers = "'$PEERS'"|' $HOME/.artelad/config/config.toml
 
-    # 配置端口
-    #sed -i -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:3458\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:3457\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:3460\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:3456\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":3466\"%" $HOME/.artelad/config/config.toml
-    #sed -i -e "s%^address = \"tcp://localhost:1317\"%address = \"tcp://0.0.0.0:3417\"%; s%^address = \":8080\"%address = \":3480\"%; s%^address = \"localhost:9090\"%address = \"0.0.0.0:3490\"%; s%^address = \"localhost:9091\"%address = \"0.0.0.0:3491\"%; s%:8545%:3445%; s%:8546%:3446%; s%:6065%:3465%" $HOME/.artelad/config/app.toml
-    #echo "export Artela_RPC_PORT=$node_address" >> $HOME/.bash_profile
+   
     source $HOME/.bash_profile   
 
     pm2 start artelad -- start && pm2 save && pm2 startup
@@ -153,7 +150,7 @@ function check_balances() {
 # 查看节点同步状态
 
 function check_sync_status() {
-    artelad status 2>&1 --node $Artela_RPC_PORT | jq .SyncInfo
+    artelad status 2>&1  | jq .SyncInfo
 }
 
 # 创建验证者
@@ -178,11 +175,11 @@ artelad tx staking create-validator \
 }
 
 # 质押代币
-function delegate_self_validator() {
+function delegate_validator() {
 read -p "请输入质押代币数量: " math
-read -p "质押出钱包名称: " out_wallet_name
-read -p "质押入钱包名称" in_wallet_name
-artelad tx staking delegate $(artelad keys show $in_wallet_name --bech val -a)  ${math}art --from $out_wallet_name --chain-id=artela_9527 --gas=auto --node  -y
+read -p "质押转出钱包名称: " out_wallet_name
+read -p "质押接收钱包地址：" in_wallet_address
+artelad tx staking delegate $in_wallet_address ${math}art --from $out_wallet_name --chain-id=artela_9527 --gas=auto --node  -y
 }
 
 # 主菜单
@@ -192,16 +189,16 @@ function main_menu() {
         echo "=========两岸猿声啼不住，轻舟已过万重山。========="
     	echo "沟通电报群：https://t.me/lumaogogogo"
         echo "请选择项"
-        echo "1. 安装节点"
-        echo "2. 创建钱包"
-        echo "3. 导入钱包"
-        echo "4. 查看钱包余额"
-        echo "5. 查看节点同步状态"
-        echo "6. 查看当前服务状态"
-        echo "7. 运行日志查询"
-        echo "8. 卸载节点"
-        echo "9. 创建验证者"  
-        echo "10. 质押代币" 
+        echo "1. 安装节点 install_node"
+        echo "2. 创建钱包 add_wallet"
+        echo "3. 导入钱包 import_wallet"
+        echo "4. 查看钱包余额 check_balances"
+        echo "5. 查看节点同步状态 check_sync_status"
+        echo "6. 查看当前服务状态 check_service_status"
+        echo "7. 运行日志查询 view_logs"
+        echo "8. 卸载节点 uninstall_node"
+        echo "9. 创建验证者 add_validator"  
+        echo "10. 质押代币 delegate_validator" 
         read -p "请输入选项（1-10）: " OPTION
 
         case $OPTION in
@@ -214,7 +211,7 @@ function main_menu() {
         7) view_logs ;;
         8) uninstall_node ;;
         9) add_validator ;;
-        10) delegate_self_validator ;;
+        10) delegate_validator ;;
         *) echo "无效选项。" ;;
         esac
         echo "按任意键返回主菜单..."
