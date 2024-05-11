@@ -73,7 +73,6 @@ function install_node() {
     # 配置artelad
     artelad config chain-id artela_9527
     artelad init "$NODE_MONIKER" --chain-id artela_9527
-    #artelad config node tcp://localhost:3457
 
     # 获取初始文件和地址簿
     curl -L https://snapshots-testnet.nodejumper.io/artela-testnet/genesis.json > $HOME/.artelad/config/genesis.json
@@ -128,25 +127,25 @@ function uninstall_node() {
 # 创建钱包
 function add_wallet() {
 	read -p "钱包名称: " wallet_name
-    artelad keys add $wallet_name
+    $HOME/go/bin/artelad keys add $wallet_name
 }
 
 # 导入钱包
 function import_wallet() {
 	read -p "钱包名称: " wallet_name
-    artelad keys add $wallet_name --recover
+    $HOME/go/bin/artelad keys add $wallet_name --recover
 }
 
 # 查询余额
 function check_balances() {
     read -p "请输入钱包地址: " wallet_address
-    artelad query bank balances "$wallet_address"
+    $HOME/go/bin/artelad query bank balances "$wallet_address"
 }
 
 # 查看节点同步状态
 
 function check_sync_status() {
-    artelad status 2>&1  | jq .SyncInfo
+    $HOME/go/bin/artelad status 2>&1 | jq .SyncInfo
 }
 
 # 创建验证者
@@ -154,28 +153,28 @@ function add_validator() {
     read -p "请输入您的钱包名称: " wallet_name
     read -p "请输入您想设置的验证者的名字: " validator_name
     
-artelad tx staking create-validator \
---amount 1000000uart \
---from $wallet_name \
---commission-rate 0.1 \
---commission-max-rate 0.2 \
---commission-max-change-rate 0.01 \
---min-self-delegation 1 \
---pubkey $(artelad tendermint show-validator) \
---moniker "$validator_name" \
---identity "" \
---details "" \
---chain-id artela_9527 \
---gas 300000 \
--y
+    $HOME/go/bin/artelad tx staking create-validator \
+    --amount 1000000uart \
+    --from $wallet_name \
+    --commission-rate 0.1 \
+    --commission-max-rate 0.2 \
+    --commission-max-change-rate 0.01 \
+    --min-self-delegation 1 \
+    --pubkey $(artelad tendermint show-validator) \
+    --moniker "$validator_name" \
+    --identity "" \
+    --details "" \
+    --chain-id artela_9527 \
+    --gas 300000 \
+    -y
 }
 
 # 质押代币
 function delegate_validator() {
-read -p "请输入质押代币数量: " math
-read -p "质押转出钱包名称: " out_wallet_name
-read -p "质押接收钱包地址：" in_wallet_address
-artelad tx staking delegate $in_wallet_address ${math}art --from $out_wallet_name --chain-id=artela_9527 --gas=auto --node  -y
+    read -p "请输入质押代币数量: " math
+    read -p "质押转出钱包名称: " out_wallet_name
+    read -p "质押接收钱包地址：" in_wallet_address
+    $HOME/go/bin/artelad tx staking delegate $in_wallet_address ${math}art --from $out_wallet_name --chain-id=artela_9527 --gas=auto --node  -y
 }
 
 # 主菜单
