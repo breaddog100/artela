@@ -71,8 +71,8 @@ function install_node() {
     make install
 
     # 配置artelad
-    artelad config chain-id artela_9527
-    artelad init "$NODE_MONIKER" --chain-id artela_9527
+    artelad config chain-id artela_11822-1
+    artelad init "$NODE_MONIKER" --chain-id artela_11822-1
 
     # 获取初始文件和地址簿
     curl -L https://snapshots-testnet.nodejumper.io/artela-testnet/genesis.json > $HOME/.artelad/config/genesis.json
@@ -164,7 +164,7 @@ function add_validator() {
     --moniker "$validator_name" \
     --identity "" \
     --details "" \
-    --chain-id artela_9527 \
+    --chain-id artela_11822-1 \
     --gas 300000 \
     -y
 }
@@ -174,7 +174,7 @@ function delegate_validator() {
     read -p "请输入质押代币数量: " math
     read -p "质押转出钱包名称: " out_wallet_name
     read -p "质押接收钱包地址：" in_wallet_address
-    $HOME/go/bin/artelad tx staking delegate $in_wallet_address ${math}art --from $out_wallet_name --chain-id=artela_9527 --gas=auto --node  -y
+    $HOME/go/bin/artelad tx staking delegate $in_wallet_address ${math}art --from $out_wallet_name --chain-id=artela_11822-1 --gas=auto --node  -y
 }
 
 # 主菜单
