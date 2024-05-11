@@ -181,8 +181,9 @@ function delegate_validator() {
 function main_menu() {
     while true; do
         clear
-        echo "=========两岸猿声啼不住，轻舟已过万重山。========="
+        echo "===============Artela 一键部署脚本==============="
     	echo "沟通电报群：https://t.me/lumaogogogo"
+    	echo "最低配置：4C8G300G；推荐配置：8C16G1000G"
         echo "请选择项"
         echo "1. 安装节点 install_node"
         echo "2. 创建钱包 add_wallet"
