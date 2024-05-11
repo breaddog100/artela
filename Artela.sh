@@ -172,10 +172,14 @@ function add_validator() {
 # 质押代币
 function delegate_validator() {
     read -p "请输入质押代币数量: " math
-    read -p "质押转出钱包名称: " out_wallet_name
-    read -p "验证者地址：" validator_addr
-    $HOME/go/bin/artelad tx staking delegate $ivalidator_addr ${math}art --from $out_wallet_name --chain-id=artela_11822-1 --gas=auto --node  -y
+    #read -p "质押转出钱包名称: " out_wallet_name
+    #read -p "验证者地址：" validator_addr
+    read -p "钱包名称：" validator_name
+    #$HOME/go/bin/artelad tx staking delegate $ivalidator_addr ${math}art --from $out_wallet_name --chain-id=artela_11822-1 --gas=auto --node  -y
+    $HOME/go/bin/artelad tx staking delegate $(artelad keys show $wallet_name --bech val -a)  ${math}art --from $wallet_name --chain-id=artela_11822-1 --gas=300000 -y
 }
+
+
 
 # 主菜单
 function main_menu() {
