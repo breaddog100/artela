@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # 检查并安装 Node.js 和 npm
 function install_nodejs_and_npm() {
     if command -v node > /dev/null 2>&1; then
@@ -85,13 +84,6 @@ function install_node() {
     source $HOME/.bash_profile   
     pm2 start artelad -- start && pm2 save && pm2 startup
     
-    # 下载快照
-    curl -L https://smeby.fun/artelad_snapshots.tar.lz4 | tar -I lz4 -xf - -C $HOME/.artelad
-
-    # 使用 PM2 启动节点进程
-    pm2 restart artelad
-    
-	source $HOME/.bash_profile   
     echo '====================== 安装完成 ==========================='
     
 }
@@ -179,7 +171,27 @@ function delegate_validator() {
     $HOME/go/bin/artelad tx staking delegate $(artelad keys show $wallet_name --bech val -a)  ${math}art --from $wallet_name --chain-id=artela_11822-1 --gas=auto -y
 }
 
+# 下载快照
+function download_snap(){
 
+    read -p "在浏览器中打开网页https://polkachu.com/testnets/artela/snapshots，输入[artela_数字.tar.lz4]具体名称: " filename
+    
+    # 下载快照
+    if wget -P $HOME/ https://snapshots.polkachu.com/testnet-snapshots/artela/$filename ;
+    then
+        pm2 stop artelad
+        cp $HOME/.artelad/data/priv_validator_state.json $HOME/priv_validator_state.json.backup
+        rm -rf $HOME/.artelad/data
+        tar -I lz4 -xf $HOME/$filename -C $HOME/.artelad 
+        cp $HOME/priv_validator_state.json.backup $HOME/.artelad/data/priv_validator_state.json
+        # 使用 PM2 启动节点进程
+        pm2 start artelad
+    else
+        echo "下载失败。"
+        exit 1
+    fi
+
+}
 
 # 主菜单
 function main_menu() {
@@ -202,6 +214,8 @@ function main_menu() {
         echo "8. 卸载节点 uninstall_node"
         echo "9. 创建验证者 add_validator"  
         echo "10. 质押代币 delegate_validator" 
+        echo "11. 下载快照 download_snap" 
+        echo "0. 退出脚本exit"
         read -p "请输入选项（1-10）: " OPTION
 
         case $OPTION in
@@ -215,6 +229,8 @@ function main_menu() {
         8) uninstall_node ;;
         9) add_validator ;;
         10) delegate_validator ;;
+        11) download_snap ;;
+        0) echo "退出脚本。"; exit 0 ;;
         *) echo "无效选项。" ;;
         esac
         echo "按任意键返回主菜单..."
