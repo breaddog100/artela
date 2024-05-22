@@ -135,7 +135,6 @@ function check_balances() {
 }
 
 # 查看节点同步状态
-
 function check_sync_status() {
     $HOME/go/bin/artelad status 2>&1 | jq .SyncInfo
 }
@@ -193,6 +192,18 @@ function download_snap(){
 
 }
 
+# 提取秘钥
+function backup_key(){
+    # 文件路径
+	file_path_priv="$HOME/.artelad/data/priv_validator_state.json"
+	# 检查文件是否存在
+	if [ -f "$file_path_priv" ]; then
+	    echo "验证者文件已生成，路径为: $file_path_priv，请尽快备份"
+	else
+	    echo "验证者文件未生成，请等待..."
+	fi
+}
+
 # 主菜单
 function main_menu() {
     while true; do
@@ -215,6 +226,7 @@ function main_menu() {
         echo "9. 创建验证者 add_validator"  
         echo "10. 质押代币 delegate_validator" 
         echo "11. 下载快照 download_snap" 
+        echo "12. 备份验证者文件 backup_key" 
         echo "0. 退出脚本exit"
         read -p "请输入选项（1-10）: " OPTION
 
@@ -230,6 +242,7 @@ function main_menu() {
         9) add_validator ;;
         10) delegate_validator ;;
         11) download_snap ;;
+        12) backup_key ;;
         0) echo "退出脚本。"; exit 0 ;;
         *) echo "无效选项。" ;;
         esac
