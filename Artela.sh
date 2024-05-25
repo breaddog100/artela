@@ -66,7 +66,7 @@ function install_node() {
     cd $HOME
     git clone https://github.com/artela-network/artela
     cd artela
-    git checkout v0.4.7-rc6
+    git checkout v0.4.7-rc7
     make install
 
     # 配置artelad
@@ -228,7 +228,7 @@ function main_menu() {
         echo "11. 下载快照 download_snap" 
         echo "12. 备份验证者文件 backup_key" 
         echo "0. 退出脚本exit"
-        read -p "请输入选项（1-10）: " OPTION
+        read -p "请输入选项: " OPTION
 
         case $OPTION in
         1) install_node ;;
