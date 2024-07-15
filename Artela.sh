@@ -155,7 +155,7 @@ function add_validator() {
     read -p "请输入您想设置的验证者的名字: " validator_name
     
     $HOME/go/bin/artelad tx staking create-validator \
-    --amount 1000000uart \
+    --amount "1art" \
     --from $wallet_name \
     --commission-rate 0.1 \
     --commission-max-rate 0.2 \
@@ -166,7 +166,7 @@ function add_validator() {
     --identity "" \
     --details "" \
     --chain-id artela_11822-1 \
-    --gas 300000 \
+    --gas 200000 \
     -y
 }
 
