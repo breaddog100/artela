@@ -67,8 +67,17 @@ function install_node() {
     cd $HOME
     git clone https://github.com/artela-network/artela
     cd artela
-    git checkout v0.4.7-rc7
+    git checkout v0.4.7-rc7-fix-execution
     make install
+    
+    cd $HOME
+    wget https://github.com/artela-network/artela/releases/download/v0.4.7-rc7-fix-execution/artelad_0.4.7_rc7_fix_execution_Linux_amd64.tar.gz
+    tar -xvf artelad_0.4.7_rc7_fix_execution_Linux_amd64.tar.gz
+    mkdir libs
+    mv $HOME/libaspect_wasm_instrument.so $HOME/libs/
+    mv $HOME/artelad /usr/local/bin/
+    echo 'export LD_LIBRARY_PATH=$HOME/libs:$LD_LIBRARY_PATH' >> ~/.bash_profile
+    source ~/.bash_profile
 
     # 配置artelad
     artelad config chain-id artela_11822-1
@@ -174,11 +183,9 @@ function delegate_validator() {
 # 下载快照
 function download_snap(){
 
-    #read -p "在浏览器中打开网页https://polkachu.com/testnets/artela/snapshots，输入[artela_数字.tar.lz4]具体名称: " filename
-    filename=artela_latest_tar.lz4
+    read -p "在浏览器中打开网页https://polkachu.com/testnets/artela/snapshots，输入[artela_数字.tar.lz4]具体名称: " filename
     # 下载快照
-    #if wget -P $HOME/ https://snapshots.polkachu.com/testnet-snapshots/artela/$filename ;
-    if wget -P $HOME/ https://snapshots.dadunode.com/artela/$filename ;
+    if wget -P $HOME/ https://snapshots.polkachu.com/testnet-snapshots/artela/$filename ;
     then
         pm2 stop artelad
         cp $HOME/.artelad/data/priv_validator_state.json $HOME/priv_validator_state.json.backup
