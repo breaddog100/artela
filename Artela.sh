@@ -42,12 +42,13 @@ function check_go_installation() {
 
 # 节点安装功能
 function install_node() {
-    install_nodejs_and_npm
-    install_pm2
 
     # 设置变量
     read -r -p "节点名称: " NODE_MONIKER
     export NODE_MONIKER=$NODE_MONIKER
+
+    install_nodejs_and_npm
+    install_pm2
 
     # 更新和安装必要的软件
     sudo apt update && sudo apt upgrade -y
@@ -66,7 +67,7 @@ function install_node() {
     cd $HOME
     git clone https://github.com/artela-network/artela
     cd artela
-    git checkout v0.4.7-rc6
+    git checkout v0.4.7-rc7
     make install
 
     # 配置artelad
@@ -173,10 +174,11 @@ function delegate_validator() {
 # 下载快照
 function download_snap(){
 
-    read -p "在浏览器中打开网页https://polkachu.com/testnets/artela/snapshots，输入[artela_数字.tar.lz4]具体名称: " filename
-    
+    #read -p "在浏览器中打开网页https://polkachu.com/testnets/artela/snapshots，输入[artela_数字.tar.lz4]具体名称: " filename
+    filename=artela_latest_tar.lz4
     # 下载快照
-    if wget -P $HOME/ https://snapshots.polkachu.com/testnet-snapshots/artela/$filename ;
+    #if wget -P $HOME/ https://snapshots.polkachu.com/testnet-snapshots/artela/$filename ;
+    if wget -P $HOME/ https://snapshots.dadunode.com/artela/$filename ;
     then
         pm2 stop artelad
         cp $HOME/.artelad/data/priv_validator_state.json $HOME/priv_validator_state.json.backup
@@ -184,7 +186,7 @@ function download_snap(){
         tar -I lz4 -xf $HOME/$filename -C $HOME/.artelad 
         cp $HOME/priv_validator_state.json.backup $HOME/.artelad/data/priv_validator_state.json
         # 使用 PM2 启动节点进程
-        pm2 start artelad
+        pm2 start artelad -- start
     else
         echo "下载失败。"
         exit 1
@@ -210,7 +212,7 @@ function main_menu() {
         clear
         echo "===============Artela 一键部署脚本==============="
     	echo "沟通电报群：https://t.me/lumaogogogo"
-    	echo "最低配置：4C8G300G；推荐配置：8C16G1000G"
+    	echo "最低配置：2C4G1T；推荐配置：4C16G1T"
     	echo "感谢以下无私的分享者："
     	echo "草边河 帮助修改质押部分"
     	echo "===============桃花潭水深千尺，不及汪伦送我情================="
@@ -222,11 +224,11 @@ function main_menu() {
         echo "5. 查看节点同步状态 check_sync_status"
         echo "6. 查看当前服务状态 check_service_status"
         echo "7. 运行日志查询 view_logs"
-        echo "8. 卸载节点 uninstall_node"
-        echo "9. 创建验证者 add_validator"  
-        echo "10. 质押代币 delegate_validator" 
-        echo "11. 下载快照 download_snap" 
-        echo "12. 备份验证者文件 backup_key" 
+        echo "8. 创建验证者 add_validator"  
+        echo "9. 质押代币 delegate_validator" 
+        echo "10. 下载快照 download_snap" 
+        echo "11. 备份验证者文件 backup_key" 
+        echo "1618. 卸载节点 uninstall_node"
         echo "0. 退出脚本exit"
         read -p "请输入选项: " OPTION
 
@@ -238,11 +240,11 @@ function main_menu() {
         5) check_sync_status ;;
         6) check_service_status ;;
         7) view_logs ;;
-        8) uninstall_node ;;
-        9) add_validator ;;
-        10) delegate_validator ;;
-        11) download_snap ;;
-        12) backup_key ;;
+        8) add_validator ;;
+        9) delegate_validator ;;
+        10) download_snap ;;
+        11) backup_key ;;
+        1618) uninstall_node ;;
         0) echo "退出脚本。"; exit 0 ;;
         *) echo "无效选项。" ;;
         esac
