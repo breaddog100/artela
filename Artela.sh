@@ -183,14 +183,15 @@ function delegate_validator() {
 # 下载快照
 function download_snap(){
 
-    read -p "在浏览器中打开网页https://polkachu.com/testnets/artela/snapshots，输入[artela_数字.tar.lz4]具体名称: " filename
+    #read -p "在浏览器中打开网页https://polkachu.com/testnets/artela/snapshots，输入[artela_数字.tar.lz4]具体名称: " filename
+    filename="artela_latest_tar.lz4"
     # 下载快照
-    if wget -P $HOME/ https://snapshots.polkachu.com/testnet-snapshots/artela/$filename ;
+    if wget -P $HOME/ https://snapshots.dadunode.com/artela/$filename ;
     then
         pm2 stop artelad
         cp $HOME/.artelad/data/priv_validator_state.json $HOME/priv_validator_state.json.backup
-        rm -rf $HOME/.artelad/data
-        tar -I lz4 -xf $HOME/$filename -C $HOME/.artelad 
+        rm -rf $HOME/.artelad/data/*
+        tar -I lz4 -xf $HOME/$filename -C $HOME/.artelad/data/
         cp $HOME/priv_validator_state.json.backup $HOME/.artelad/data/priv_validator_state.json
         # 使用 PM2 启动节点进程
         pm2 start artelad -- start
@@ -207,9 +208,23 @@ function backup_key(){
 	file_path_priv="$HOME/.artelad/data/priv_validator_state.json"
 	# 检查文件是否存在
 	if [ -f "$file_path_priv" ]; then
+	    cp $file_path_priv $HOME/priv_validator_state.json.backup
 	    echo "验证者文件已生成，路径为: $file_path_priv，请尽快备份"
 	else
 	    echo "验证者文件未生成，请等待..."
+	fi
+}
+
+# 恢复验证者
+function recover_key(){
+    # 文件路径
+	file_path_priv="$HOME/priv_validator_state.json.backup"
+	# 检查文件是否存在
+	if [ -f "$file_path_priv" ]; then
+	    cp $file_path_priv $HOME/.artelad/data/priv_validator_state.json
+	    echo "验证者文件已恢复"
+	else
+	    echo "验证者文件未备份，请先备份..."
 	fi
 }
 
@@ -234,7 +249,8 @@ function main_menu() {
         echo "8. 创建验证者 add_validator"  
         echo "9. 质押代币 delegate_validator" 
         echo "10. 下载快照 download_snap" 
-        echo "11. 备份验证者文件 backup_key" 
+        echo "11. 备份验证者文件 backup_key"
+        echo "12. 恢复验证者文件 recover_key"
         echo "1618. 卸载节点 uninstall_node"
         echo "0. 退出脚本exit"
         read -p "请输入选项: " OPTION
@@ -251,6 +267,7 @@ function main_menu() {
         9) delegate_validator ;;
         10) download_snap ;;
         11) backup_key ;;
+        12) recover_key ;;
         1618) uninstall_node ;;
         0) echo "退出脚本。"; exit 0 ;;
         *) echo "无效选项。" ;;
