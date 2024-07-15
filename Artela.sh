@@ -177,7 +177,7 @@ function delegate_validator() {
     #read -p "验证者地址：" validator_addr
     read -p "钱包名称：" wallet_name
     #$HOME/go/bin/artelad tx staking delegate $ivalidator_addr ${math}art --from $out_wallet_name --chain-id=artela_11822-1 --gas=auto -y
-    $HOME/go/bin/artelad tx staking delegate $(artelad keys show $wallet_name --bech val -a)  ${math}art --from $wallet_name --chain-id=artela_11822-1 --gas=auto -y
+    $HOME/go/bin/artelad tx staking delegate $(artelad keys show $wallet_name --bech val -a)  ${math}art --from $wallet_name --chain-id=artela_11822-1 --gas=300000
 }
 
 # 下载快照
