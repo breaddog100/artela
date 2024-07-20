@@ -92,7 +92,7 @@ function install_node() {
     sed -i 's|^persistent_peers *=.*|persistent_peers = "'$PEERS'"|' $HOME/.artelad/config/config.toml
 
     source $HOME/.bash_profile   
-    pm2 start artelad && pm2 save && pm2 startup
+    pm2 start artelad -- start && pm2 save && pm2 startup
     
     echo '====================== 安装完成 ==========================='
     
