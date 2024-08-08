@@ -1,5 +1,45 @@
 #!/bin/bash
 
+# 设置版本号
+current_version=20240808001
+
+update_script() {
+    # 指定URL
+    update_url="https://raw.githubusercontent.com/breaddog100/artela/main/Artela.sh"
+    file_name=$(basename "$update_url")
+
+    # 下载脚本文件
+    tmp=$(date +%s)
+    timeout 10s curl -s -o "$HOME/$tmp" -H "Cache-Control: no-cache" "$update_url?$tmp"
+    exit_code=$?
+    if [[ $exit_code -eq 124 ]]; then
+        echo "命令超时"
+        return 1
+    elif [[ $exit_code -ne 0 ]]; then
+        echo "下载失败"
+        return 1
+    fi
+
+    # 检查是否有新版本可用
+    latest_version=$(grep -oP 'current_version=([0-9]+)' $HOME/$tmp | sed -n 's/.*=//p')
+
+    if [[ "$latest_version" -gt "$current_version" ]]; then
+        clear
+        echo ""
+        # 提示需要更新脚本
+        printf "\033[31m脚本有新版本可用！当前版本：%s，最新版本：%s\033[0m\n" "$current_version" "$latest_version"
+        echo "正在更新..."
+        sleep 3
+        mv $HOME/$tmp $HOME/$file_name
+        chmod +x $HOME/$file_name
+        exec "$HOME/$file_name"
+    else
+        # 脚本是最新的
+        rm -f $tmp
+    fi
+
+}
+
 # 检查并安装 Node.js 和 npm
 function install_nodejs_and_npm() {
     if command -v node > /dev/null 2>&1; then
@@ -233,6 +273,7 @@ function main_menu() {
     while true; do
         clear
         echo "===============Artela 一键部署脚本==============="
+        echo "当前版本：$current_version"
     	echo "沟通电报群：https://t.me/lumaogogogo"
     	echo "最低配置：2C4G1T；推荐配置：4C16G1T"
     	echo "感谢以下无私的分享者："
@@ -277,6 +318,9 @@ function main_menu() {
     done
     
 }
+
+# 检查更新
+update_script
 
 # 显示主菜单
 main_menu
