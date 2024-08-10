@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 设置版本号
-current_version=20240811001
+current_version=20240811002
 
 update_script() {
     # 指定URL
@@ -270,8 +270,9 @@ function delegate_validator() {
 
 # 下载快照
 function download_snap(){
-
-    read -p "请先在浏览器中打开网址：https://server-4.itrocket.net/testnet/artela/，输入快照名称：（格式类似[artela_数字.tar.lz4]，比如：artela_2024-08-10_11319976_snap.tar.lz4）" filename
+    echo "1，请先在浏览器中打开网址：https://server-4.itrocket.net/testnet/artela/"
+    echo "2，在页面中找到快照文件名，格式类似[artela_数字.tar.lz4]，比如：artela_2024-08-10_11319976_snap.tar.lz4"
+    read -p "输入快照名称：" filename
     #filename="artela_latest_tar.lz4"
     # 下载快照
     if wget -P $HOME/ https://server-4.itrocket.net/testnet/artela/$filename ;
