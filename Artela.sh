@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 设置版本号
-current_version=20240810003
+current_version=20240811001
 
 update_script() {
     # 指定URL
@@ -271,14 +271,15 @@ function delegate_validator() {
 # 下载快照
 function download_snap(){
 
-    #read -p "在浏览器中打开网页https://polkachu.com/testnets/artela/snapshots，输入[artela_数字.tar.lz4]具体名称: " filename
-    filename="artela_latest_tar.lz4"
+    read -p "请先在浏览器中打开网址：https://server-4.itrocket.net/testnet/artela/，输入快照名称：（格式类似[artela_数字.tar.lz4]，比如：artela_2024-08-10_11319976_snap.tar.lz4）" filename
+    #filename="artela_latest_tar.lz4"
     # 下载快照
-    if wget -P $HOME/ https://snapshots.dadunode.com/artela/$filename ;
+    if wget -P $HOME/ https://server-4.itrocket.net/testnet/artela/$filename ;
     then
         stop_node
         cp $HOME/.artelad/data/priv_validator_state.json $HOME/priv_validator_state.json.backup
         rm -rf $HOME/.artelad/data/*
+        artelad tendermint unsafe-reset-all --home $HOME/.artelad --keep-addr-book
         tar -I lz4 -xf $HOME/$filename -C $HOME/.artelad/data/
         cp $HOME/priv_validator_state.json.backup $HOME/.artelad/data/priv_validator_state.json
         start_node
