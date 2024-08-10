@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 设置版本号
-current_version=20240811003
+current_version=20240811004
 
 update_script() {
     # 指定URL
@@ -359,7 +359,7 @@ function main_menu() {
     	echo "最低配置：2C4G1T；推荐配置：4C16G1T"
     	echo "感谢以下无私的分享者："
     	echo "草边河 帮助修改质押部分"
-    	echo "===============桃花潭水深千尺，不及汪伦送我情================="
+    	echo "=========桃花潭水深千尺，不及汪伦送我情==========="
         echo "请选择项"
         echo "1. 安装节点 install_node"
         echo "2. 创建钱包 add_wallet"
