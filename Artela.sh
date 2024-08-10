@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 设置版本号
-current_version=20240811002
+current_version=20240811003
 
 update_script() {
     # 指定URL
@@ -279,9 +279,9 @@ function download_snap(){
     then
         stop_node
         cp $HOME/.artelad/data/priv_validator_state.json $HOME/priv_validator_state.json.backup
-        rm -rf $HOME/.artelad/data/*
+        rm -rf $HOME/.artelad/data
         artelad tendermint unsafe-reset-all --home $HOME/.artelad --keep-addr-book
-        tar -I lz4 -xf $HOME/$filename -C $HOME/.artelad/data/
+        lz4 -dc $HOME/$filename | tar -x -C $HOME/.artelad/
         cp $HOME/priv_validator_state.json.backup $HOME/.artelad/data/priv_validator_state.json
         start_node
     else
