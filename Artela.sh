@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 设置版本号
-current_version=20240811004
+current_version=20241011001
 
 update_script() {
     # 指定URL
@@ -326,7 +326,7 @@ function check_and_upgrade {
 
     # 获取远程版本
     git fetch --tags
-    remote_version=$(git describe --tags `git rev-list --tags --max-count=1`)
+    remote_version=$(git describe --tags $(git rev-list --tags --max-count=1))
 
     echo "本地程序版本: $local_version"
     echo "官方程序版本: $remote_version"
